@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FinRecon | Exception Management</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #1e293b;
+        }
+
+        .navbar {
+            background: #142d4e;
+            color: white;
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 35px;
+        }
+
+        h2 {
+            color: #142d4e;
+        }
+
+        .filter-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        input, select {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 16px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #142d4e;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .save-button {
+            background: #16a34a;
+        }
+
+        .save-button:hover {
+            background: #15803d;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: #2563eb;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">FinRecon</div>
+
+    <div class="container">
+
+        <h2>Exception Management</h2>
+
+        <p>Review and manage unmatched financial transactions.</p>
+
+        <div class="filter-box">
+
+            <form method="GET">
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search Transaction ID"
+                    value="{{ search_query }}"
+                >
+
+                <select name="status">
+                    <option value="">All Exception Statuses</option>
+
+                    <option value="Open" {% if selected_status == "Open" %}selected{% endif %}>
+                        Open
+                    </option>
+
+                    <option value="In Progress" {% if selected_status == "In Progress" %}selected{% endif %}>
+                        In Progress
+                    </option>
+
+                    <option value="Resolved" {% if selected_status == "Resolved" %}selected{% endif %}>
+                        Resolved
+                    </option>
+                </select>
+
+                <button type="submit">Search / Filter</button>
+
+                <a href="/exceptions/">Clear</a>
+
+            </form>
+
+        </div>
+
+        <table>
+
+            <tr>
+                <th>Transaction ID</th>
+                <th>Bank Amount</th>
+                <th>Internal Amount</th>
+                <th>Reconciliation Status</th>
+                <th>Exception Status</th>
+                <th>Notes</th>
+                <th>Action</th>
+            </tr>
+
+            {% for item in exceptions %}
+
+            <tr>
+                <td>
+                    {{ item.transaction_id }}
+
+                    <form id="form-{{ item.id }}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="record_id" value="{{ item.id }}">
+                    </form>
+                </td>
+
+                <td>{{ item.bank_amount|default_if_none:"-" }}</td>
+                <td>{{ item.internal_amount|default_if_none:"-" }}</td>
+                <td>{{ item.status }}</td>
+
+                <td>
+                    <select name="exception_status" form="form-{{ item.id }}">
+                        <option value="Open" {% if item.exception_status == "Open" %}selected{% endif %}>Open</option>
+                        <option value="In Progress" {% if item.exception_status == "In Progress" %}selected{% endif %}>In Progress</option>
+                        <option value="Resolved" {% if item.exception_status == "Resolved" %}selected{% endif %}>Resolved</option>
+                    </select>
+                </td>
+
+                <td>
+                    <input
+                        type="text"
+                        name="notes"
+                        value="{{ item.notes }}"
+                        form="form-{{ item.id }}"
+                    >
+                </td>
+
+                <td>
+                    <button
+                        type="submit"
+                        form="form-{{ item.id }}"
+                        class="save-button"
+                    >
+                        Save
+                    </button>
+                </td>
+            </tr>
+
+            {% empty %}
+
+            <tr>
+                <td colspan="7">No exceptions found.</td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+        <a class="back-link" href="/">← Back to Upload Page</a>
+
+    </div>
+
+</body>
+</html>

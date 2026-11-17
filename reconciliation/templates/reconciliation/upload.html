@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FinRecon | Transaction Reconciliation</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #1e293b;
+        }
+
+        .navbar {
+            background: #142d4e;
+            color: white;
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 60px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #142d4e;
+        }
+
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        .upload-box {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .error {
+            color: #dc2626;
+            background: #fee2e2;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #64748b;
+            margin-top: 25px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        FinRecon
+    </div>
+
+    <div class="container">
+
+        <h2>Financial Transaction Reconciliation</h2>
+
+        <p class="subtitle">
+            Upload bank and internal transaction files to identify
+            matching records and discrepancies.
+        </p>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <div class="upload-box">
+                <label>Bank Transactions CSV</label>
+                <input type="file" name="bank_file" accept=".csv" required>
+            </div>
+
+            <div class="upload-box">
+                <label>Internal Transactions CSV</label>
+                <input type="file" name="internal_file" accept=".csv" required>
+            </div>
+
+            <button type="submit">Reconcile Transactions</button>
+
+        </form>
+
+        <div class="footer">
+            FinRecon | Financial Reconciliation System
+        </div>
+
+    </div>
+
+</body>
+</html>

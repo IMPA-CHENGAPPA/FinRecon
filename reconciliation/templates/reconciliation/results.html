@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FinRecon | Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #1e293b;
+        }
+
+        .navbar {
+            background: #142d4e;
+            color: white;
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 35px;
+        }
+
+        h2 {
+            color: #142d4e;
+        }
+
+        .cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 180px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+        }
+
+        .card h3 {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .card h1 {
+            color: #142d4e;
+        }
+
+        .actions {
+            margin: 25px 0;
+        }
+
+        .actions a {
+            display: inline-block;
+            padding: 12px 18px;
+            margin-right: 10px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .actions a:hover {
+            background: #1d4ed8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #142d4e;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .footer {
+            margin-top: 30px;
+            color: #64748b;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">FinRecon</div>
+
+    <div class="container">
+
+        <h2>Reconciliation Dashboard</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Total Transactions</h3>
+                <h1>{{ total }}</h1>
+            </div>
+
+            <div class="card">
+                <h3>Matched</h3>
+                <h1>{{ matched }}</h1>
+            </div>
+
+            <div class="card">
+                <h3>Amount Mismatches</h3>
+                <h1>{{ mismatched }}</h1>
+            </div>
+
+            <div class="card">
+                <h3>Missing Records</h3>
+                <h1>{{ missing }}</h1>
+            </div>
+
+        </div>
+
+        <div class="actions">
+            <a href="{% url 'download_report' %}">Download CSV Report</a>
+            <a href="{% url 'exception_management' %}">Manage Exceptions</a>
+        </div>
+
+        <h2>Transaction Details</h2>
+
+        <table>
+            <tr>
+                <th>Transaction ID</th>
+                <th>Bank Amount</th>
+                <th>Internal Amount</th>
+                <th>Status</th>
+            </tr>
+
+            {% for item in results %}
+            <tr>
+                <td>{{ item.transaction_id }}</td>
+
+                <td>
+                    {% if item.bank_amount == item.bank_amount %}
+                        {{ item.bank_amount }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if item.internal_amount == item.internal_amount %}
+                        {{ item.internal_amount }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+
+                <td>{{ item.status }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No transactions found.</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+
+        <div class="footer">
+            FinRecon | Financial Reconciliation System
+        </div>
+
+        <br>
+        <a href="/">Upload Another Set of Files</a>
+
+    </div>
+
+</body>
+</html>
